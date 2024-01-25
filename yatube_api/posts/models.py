@@ -25,6 +25,9 @@ class Post(models.Model):
         related_name='posts', blank=True, null=True
     )
 
+    class Meta:
+        ordering = ('pub_date',)
+
     def __str__(self):
         return self.text
 
@@ -50,5 +53,10 @@ class Follow(models.Model):
             models.UniqueConstraint(
                 fields=['user', 'following'],
                 name='unique_user_following'
+            ),
+            models.UniqueConstraint(
+                fields=['user'],
+                condition=models.Q(user=models.F('following')),
+                name='unique_user_self_following'
             )
         ]
